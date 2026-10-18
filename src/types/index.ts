@@ -165,6 +165,14 @@ export interface Course {
   competencyId?: string;
 }
 
+export type CompetencyStanding =
+  | "sin_iniciar"
+  | "en_formacion"
+  | "formacion_completa"
+  | "en_aplicacion"
+  | "en_validacion"
+  | "acreditada";
+
 export interface Competency {
   id: string;
   name: string;
@@ -174,6 +182,7 @@ export interface Competency {
   currentLevel: string;
   baseProgress: number;
   lessonIds: string[];
+  standing?: CompetencyStanding;
 }
 
 export interface RouteStage {

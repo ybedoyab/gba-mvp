@@ -24,15 +24,21 @@ export default function ProyectosPage() {
         crumbs={[{ href: "/app/academy", label: "Academy" }, { label: "Proyectos" }]}
         eyebrow="Acreditación"
         title="Demuestra lo que sabes aplicar"
-        description="El curso acredita la formación. La competencia se acredita cuando un experto autorizado valida la evidencia."
+        description="Completar el curso cierra la formación. La competencia se acredita solo cuando un experto autorizado valida la evidencia."
       />
       <ol className="mb-5 grid gap-2 sm:grid-cols-4">
-        {phases.map((phase, index) => (
-          <li key={phase} className="rounded-2xl border border-line bg-white p-3">
-            <p className="text-[11px] font-bold text-plum">0{index + 1}</p>
-            <p className="font-semibold">{phase}</p>
-          </li>
-        ))}
+        {phases.map((phase, index) => {
+          const current =
+            project.status === "acreditado" ? 3 :
+            project.status === "en_validacion" ? 2 :
+            project.status === "en_desarrollo" ? 1 : 0;
+          return (
+            <li key={phase} className={`rounded-2xl border p-3 ${index === current ? "border-plum bg-plum-soft" : "border-line bg-white"}`}>
+              <p className="text-[11px] font-bold text-plum">0{index + 1}</p>
+              <p className="font-semibold">{phase}</p>
+            </li>
+          );
+        })}
       </ol>
       <div className="grid gap-4 lg:grid-cols-[280px_1fr]">
         <div className="space-y-2">

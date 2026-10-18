@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { PageIntro, Panel } from "@/components/shared/page";
+import { standingLabel } from "@/lib/workspace";
 import { useWorkspace } from "@/hooks/use-workspace";
 
 export default function RutaPage() {
@@ -41,18 +42,18 @@ export default function RutaPage() {
         <p className="mt-3 text-sm">
           Estado: <b className="capitalize">{stage.state}</b>
         </p>
-        {stage.id === "formacion" && (
+        {stage.state !== "bloqueada" && stage.id === "formacion" && (
           <Button className="mt-4" onClick={() => router.push(`/app/academy/leccion/${workspace.activeLesson.id}`)}>
             Ir a la lección
           </Button>
         )}
-        {stage.id === "aplicacion" || stage.id === "proyecto" ? (
+        {stage.state !== "bloqueada" && (stage.id === "aplicacion" || stage.id === "proyecto" || stage.id === "validacion") ? (
           <Button className="mt-4" variant="outline" onClick={() => router.push("/app/academy/proyectos")}>
             Ver proyecto de acreditación
           </Button>
         ) : null}
         {stage.state === "bloqueada" && (
-          <p className="mt-3 text-sm text-muted">Esta etapa se abre cuando la anterior tiene evidencia suficiente. No se salta.</p>
+          <p className="mt-3 text-sm text-muted">Esta etapa sigue bloqueada. Completar lecciones no la abre ni acredita la competencia.</p>
         )}
       </Panel>
       <Panel title="Capacidades de la ruta" className="mt-4">
@@ -60,7 +61,7 @@ export default function RutaPage() {
           {workspace.competencies.map((item) => (
             <li key={item.id} className="rounded-xl border border-line p-3">
               <p className="text-sm font-semibold">{item.name}</p>
-              <p className="text-xs text-muted">{item.family} · {item.baseProgress}%</p>
+              <p className="text-xs text-muted">{item.family} · formación {item.baseProgress}% · {standingLabel[item.standing ?? "sin_iniciar"]}</p>
               <p className="mt-1 text-sm text-muted">{item.description}</p>
             </li>
           ))}

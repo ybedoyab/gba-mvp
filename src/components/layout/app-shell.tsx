@@ -20,7 +20,7 @@ import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { activeItem, groupForPath, navigation, presentationSteps } from "@/lib/navigation";
 import { tenants } from "@/data/tenants";
-import { demoUser } from "@/data/users";
+import { resolveSessionUser } from "@/data/users";
 import { initials } from "@/lib/utils";
 import { useWorkspace } from "@/hooks/use-workspace";
 import { useDemoStore } from "@/stores/demo-store";
@@ -43,6 +43,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const setHelp = useDemoStore((state) => state.setHelp);
   const setTenant = useDemoStore((state) => state.setTenant);
   const tenantId = useDemoStore((state) => state.tenantId);
+  const sessionUser = resolveSessionUser(useDemoStore((state) => state.email));
   const logout = useDemoStore((state) => state.logout);
   const resetDemo = useDemoStore((state) => state.resetDemo);
   const presentation = useDemoStore((state) => state.presentation);
@@ -233,16 +234,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </button>
             <DropMenu>
               <MenuTrigger className="overflow-hidden rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal" aria-label="Cuenta">
-                {demoUser.avatar ? (
-                  <img src={demoUser.avatar} alt="" className="h-10 w-10 object-cover" />
+                {sessionUser.avatar ? (
+                  <img src={sessionUser.avatar} alt="" className="h-10 w-10 object-cover" />
                 ) : (
-                  <span className="grid h-10 w-10 place-items-center bg-plum text-xs font-bold text-white">{initials(demoUser.name)}</span>
+                  <span className="grid h-10 w-10 place-items-center bg-plum text-xs font-bold text-white">{initials(sessionUser.name)}</span>
                 )}
               </MenuTrigger>
               <MenuContent>
                 <div className="px-3 py-2">
-                  <p className="text-sm font-semibold">{demoUser.name}</p>
-                  <p className="text-xs text-muted">{demoUser.roleTitle}</p>
+                  <p className="text-sm font-semibold">{sessionUser.name}</p>
+                  <p className="text-xs text-muted">{sessionUser.roleTitle}</p>
                 </div>
                 <MenuItem onSelect={() => router.push("/app/academy/perfil")}>Mi perfil de desarrollo</MenuItem>
                 <MenuItem onSelect={() => setPresentation(!presentation)}>
@@ -290,9 +291,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
         <SheetContent title="Navegación" side="left">
           <div className="space-y-4 p-4">
-            <label className="block text-xs font-semibold text-muted">
+            <label htmlFor="entidad-movil" className="block text-xs font-semibold text-muted">
               Entidad de demostración
               <select
+                id="entidad-movil"
+                aria-label="Entidad de demostración"
                 value={tenantId}
                 onChange={(event) => setTenant(event.target.value as TenantId)}
                 className="mt-1 h-11 w-full rounded-xl border border-line px-3 text-sm font-semibold text-ink"

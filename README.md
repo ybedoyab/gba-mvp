@@ -38,6 +38,19 @@ Next.js (App Router), React, TypeScript estricto, Tailwind CSS, componentes al e
 
 Login, dashboard, Mi Transformación, preoperativos, programa y detalle de módulo, índice de madurez, iniciativas, Academy, ruta, lección, perfil, catálogo, proyectos de acreditación, reportería y GIO.
 
+## Repositorio público
+
+Este repositorio es público. Además del código de la demo, el historial y la rama `main` incluyen materiales de referencia que no forman parte de la aplicación:
+
+- `01. GBA - Análisis de Factibilidad 14.10.26.pdf`
+- `02. Mockup_V14.10.26.zip`
+- `03. GBA_ Guion Teaser Promocional.docx`
+- `Cierre de etapa y traspaso.pdf`
+- `GBA_Presentacion_Factibilidad_2026-10-06.pptx (1).pdf`
+- la carpeta `Mockup_V19.2.2_FINAL/`
+
+Quien clone o navegue el repositorio puede descargar esos archivos. No se eliminaron ni se reescribió el historial: sacarlos de un repositorio público exige una decisión explícita y, si ya se publicaron, una limpieza de historial. `.vercelignore` solo evita subirlos al despliegue.
+
 ## Pendiente para producción
 
 Identidad aprobada, autenticación, aislamiento entre cooperativas, LMS, Monday, Drive, importación real del IMD y un proveedor de IA gobernado por las reglas de GBA.

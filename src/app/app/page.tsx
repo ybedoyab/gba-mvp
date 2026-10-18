@@ -19,7 +19,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { PageIntro, Panel } from "@/components/shared/page";
-import { demoUser } from "@/data/users";
+import { resolveSessionUser } from "@/data/users";
 import { useWorkspace } from "@/hooks/use-workspace";
 import { useDemoStore } from "@/stores/demo-store";
 
@@ -29,6 +29,7 @@ export default function DashboardPage() {
   const workspace = useWorkspace();
   const router = useRouter();
   const setGio = useDemoStore((state) => state.setGio);
+  const sessionUser = resolveSessionUser(useDemoStore((state) => state.email));
   const { tenant, byStatus, transformationIndex, formationRate, pending, routeProgress } = workspace;
   const execution = [
     { name: "Planificación", value: byStatus.planificacion },
@@ -40,9 +41,9 @@ export default function DashboardPage() {
   return (
     <div className="mx-auto max-w-6xl">
       <PageIntro
-        crumbs={[{ href: "/app", label: "Inicio" }, { label: demoUser.roleTitle }]}
+        crumbs={[{ href: "/app", label: "Inicio" }, { label: sessionUser.roleTitle }]}
         eyebrow={tenant.portalLabel}
-        title={`Hola, ${demoUser.firstName}`}
+        title={`Hola, ${sessionUser.firstName}`}
         description={tenant.welcome}
         actions={
           <Button variant="plum" onClick={() => setGio(true)}>
