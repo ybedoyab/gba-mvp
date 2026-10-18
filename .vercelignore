@@ -1,0 +1,11 @@
+# Material de referencia: no forma parte de la demo en ejecución.
+*.pdf
+*.zip
+*.docx
+*.pptx
+Mockup_V19.2.2_FINAL
+_extract
+e2e
+playwright.config.ts
+test-results
+playwright-report
