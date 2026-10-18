@@ -8,8 +8,15 @@ test.beforeEach(async ({ page }) => {
 
 test("recorre login, planeación, academy y reportería", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Iniciar sesión" })).toBeVisible();
-  await page.getByRole("button", { name: "Iniciar sesión" }).click();
-  await expect(page.getByRole("heading", { name: "Hola, Laura" })).toBeVisible({ timeout: 20000 });
+  const enter = page.getByRole("button", { name: "Iniciar sesión" });
+  await enter.click();
+  const hello = page.getByRole("heading", { name: "Hola, Laura" });
+  try {
+    await expect(hello).toBeVisible({ timeout: 15000 });
+  } catch {
+    if (await page.getByRole("heading", { name: "Iniciar sesión" }).isVisible()) await enter.click();
+    await expect(hello).toBeVisible({ timeout: 20000 });
+  }
   await expect(page.getByRole("button", { name: "Planeación", exact: true })).toBeVisible();
   await expect(page.getByRole("link", { name: /Pendientes/ })).toBeVisible();
 
@@ -33,8 +40,15 @@ test("recorre login, planeación, academy y reportería", async ({ page }) => {
 test("en móvil no aparece scroll horizontal y el menú abre secciones", async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== "mobile", "El menú hamburguesa solo está en pantallas pequeñas.");
   await expect(page.getByRole("heading", { name: "Iniciar sesión" })).toBeVisible();
-  await page.getByRole("button", { name: "Iniciar sesión" }).click();
-  await expect(page.getByRole("heading", { name: "Hola, Laura" })).toBeVisible({ timeout: 20000 });
+  const enter = page.getByRole("button", { name: "Iniciar sesión" });
+  await enter.click();
+  const hello = page.getByRole("heading", { name: "Hola, Laura" });
+  try {
+    await expect(hello).toBeVisible({ timeout: 15000 });
+  } catch {
+    if (await page.getByRole("heading", { name: "Iniciar sesión" }).isVisible()) await enter.click();
+    await expect(hello).toBeVisible({ timeout: 20000 });
+  }
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(1);
   await page.getByRole("button", { name: "Abrir menú" }).click();

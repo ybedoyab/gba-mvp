@@ -62,9 +62,10 @@ export default function LessonPage() {
           <p className="text-sm text-muted">{lesson.outcome}</p>
           {locked && <p className="mt-2 text-sm text-amber">Completa la lección anterior para seguir la secuencia.</p>}
           <div className="mt-4 flex flex-wrap gap-2">
-            <Button onClick={complete} disabled={lesson.baseProgress >= 100}>
+            <Button onClick={complete} disabled={locked || lesson.baseProgress >= 100}>
               <Check className="h-4 w-4" /> {lesson.baseProgress >= 100 ? "Completada" : "Marcar como completada"}
             </Button>
+            <p className="w-full text-xs text-muted">Completar la lección cierra la formación de esta actividad. No acredita la competencia.</p>
             {next && (
               <Button variant="outline" onClick={() => router.push(`/app/academy/leccion/${next.id}`)}>
                 Siguiente lección

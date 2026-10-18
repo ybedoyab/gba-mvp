@@ -33,4 +33,23 @@ export const users: DemoUser[] = [
   },
 ];
 
+const auroraLead: DemoUser = {
+  id: "valentina",
+  name: "Valentina Ruiz",
+  firstName: "Valentina",
+  roleTitle: "Responsable de Transformación Digital",
+  email: "valentina.ruiz@cooperativa.aurora",
+  audience: "Colaboradores",
+  avatar: "",
+  tenantId: "aurora",
+};
+
 export const demoUser = users[0];
+
+export function resolveSessionUser(email: string): DemoUser {
+  const value = email.trim().toLowerCase();
+  if (value.includes("camila") || value.includes("gba") || value.includes("red")) return users[2];
+  if (value.includes("german") || value.includes("gerente")) return users[1];
+  if (value.includes("aurora")) return auroraLead;
+  return users[0];
+}

@@ -128,6 +128,12 @@ export const courses: Course[] = [
   },
 ];
 
+export const contractedCourseIds: Record<"ejemplo" | "aurora" | "red", string[]> = {
+  ejemplo: ["sarlaft-lideres", "finanzas-abiertas", "gobierno-digital", "liderazgo"],
+  aurora: ["liderazgo"],
+  red: [],
+};
+
 export const lessons: Lesson[] = [
   {
     id: "marco-sarlaft",

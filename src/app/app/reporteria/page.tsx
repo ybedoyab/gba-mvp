@@ -11,6 +11,8 @@ import {
 } from "recharts";
 import { PageIntro, Panel } from "@/components/shared/page";
 import { EmptyState } from "@/components/shared/status";
+import { resolveSessionUser } from "@/data/users";
+import { standingLabel } from "@/lib/workspace";
 import { useWorkspace } from "@/hooks/use-workspace";
 import { useDemoStore } from "@/stores/demo-store";
 import type { ViewAs } from "@/types";
@@ -19,6 +21,7 @@ export default function ReporteriaPage() {
   const workspace = useWorkspace();
   const viewAs = useDemoStore((state) => state.viewAs);
   const setViewAs = useDemoStore((state) => state.setViewAs);
+  const sessionUser = resolveSessionUser(useDemoStore((state) => state.email));
   const [axis, setAxis] = useState("todos");
   const [status, setStatus] = useState("todos");
 
@@ -54,7 +57,7 @@ export default function ReporteriaPage() {
               onChange={(event) => setViewAs(event.target.value as ViewAs)}
               className="ml-2 h-10 rounded-xl border border-line bg-white px-3 text-sm font-semibold text-ink"
             >
-              <option value="participante">Participante · Laura Gómez</option>
+              <option value="participante">Participante</option>
               <option value="gerencia">Jefatura / gerencia</option>
               <option value="gba">Administración GBA</option>
             </select>
@@ -62,12 +65,26 @@ export default function ReporteriaPage() {
         }
       />
 
-      <div className="mb-4 flex flex-wrap gap-2">
-        <Filter label="Eje" value={axis} onChange={setAxis} options={[["todos", "Todos"], ["sarlaft", "SARLAFT"], ["gobierno", "Gobierno"], ["experiencia", "Experiencia"]]} />
-        <Filter label="Iniciativas" value={status} onChange={setStatus} options={[["todos", "Todos"], ["ejecucion", "En ejecución"], ["retrasada", "Retrasadas"], ["completada", "Completadas"], ["planificacion", "Planificación"]]} />
-      </div>
+      {viewAs === "gerencia" && (
+        <div className="mb-4 flex flex-wrap gap-2">
+          <Filter label="Eje" value={axis} onChange={setAxis} options={[["todos", "Todos"], ["sarlaft", "SARLAFT"], ["gobierno", "Gobierno"], ["experiencia", "Experiencia"]]} />
+          <Filter label="Iniciativas" value={status} onChange={setStatus} options={[["todos", "Todos"], ["ejecucion", "En ejecución"], ["retrasada", "Retrasadas"], ["completada", "Completadas"], ["planificacion", "Planificación"]]} />
+        </div>
+      )}
+      {viewAs === "gba" && (
+        <p className="mb-4 text-sm text-muted">Comparativo de la red. Cada fila usa solo los datos de esa entidad.</p>
+      )}
 
-      {viewAs === "participante" && <Participant workspaceProgress={workspace.routeProgress} lesson={workspace.activeLesson.title} competencies={workspace.competencies} pending={workspace.pending.slice(0, 3)} />}
+      {viewAs === "participante" && (
+        <Participant
+          person={sessionUser.tenantId === workspace.tenant.id ? sessionUser.name : workspace.tenant.team[0]?.name ?? sessionUser.name}
+          tenantName={workspace.tenant.name}
+          workspaceProgress={workspace.routeProgress}
+          lesson={workspace.activeLesson.title}
+          competencies={workspace.competencies}
+          pending={workspace.pending.slice(0, 3)}
+        />
+      )}
       {viewAs === "gerencia" && (
         <Gerencia
           tenantName={workspace.tenant.name}
@@ -108,21 +125,26 @@ function Filter({
 }
 
 function Participant({
+  person,
+  tenantName,
   workspaceProgress,
   lesson,
   competencies,
   pending,
 }: {
+  person: string;
+  tenantName: string;
   workspaceProgress: number;
   lesson: string;
-  competencies: { id: string; name: string; baseProgress: number }[];
+  competencies: { id: string; name: string; baseProgress: number; standing?: string }[];
   pending: { id: string; title: string }[];
 }) {
   return (
     <div className="grid gap-4 md:grid-cols-2">
-      <Panel title="Avance individual">
+      <Panel title={`Avance de formación · ${person}`}>
         <p className="text-4xl font-semibold text-navy">{workspaceProgress}%</p>
-        <p className="mt-1 text-sm text-muted">Siguiente actividad: {lesson}.</p>
+        <p className="mt-1 text-sm text-muted">Siguiente actividad en {tenantName}: {lesson}.</p>
+        <p className="mt-2 text-xs text-muted">Este porcentaje es formación. No acredita competencias.</p>
       </Panel>
       <Panel title="Próximos pasos">
         <ul className="space-y-2 text-sm">{pending.map((item) => <li key={item.id}>{item.title}</li>)}</ul>
@@ -130,11 +152,11 @@ function Participant({
       <Panel title="Competencias" className="md:col-span-2">
         <div className="h-56">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={competencies.map((item) => ({ name: item.name.split(" ")[0], value: item.baseProgress }))}>
+            <BarChart data={competencies.map((item) => ({ name: item.name.split(" ")[0], value: item.baseProgress, estado: standingLabel[(item.standing ?? "sin_iniciar") as keyof typeof standingLabel] }))}>
               <XAxis dataKey="name" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
               <YAxis axisLine={false} tickLine={false} width={28} />
               <Tooltip />
-              <Bar dataKey="value" fill="#5C3D86" radius={[6, 6, 0, 0]} name="Avance %" />
+              <Bar dataKey="value" fill="#5C3D86" radius={[6, 6, 0, 0]} name="Formación %" />
             </BarChart>
           </ResponsiveContainer>
         </div>

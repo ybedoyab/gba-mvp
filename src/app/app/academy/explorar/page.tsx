@@ -7,10 +7,12 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { PageIntro } from "@/components/shared/page";
 import { EmptyState } from "@/components/shared/status";
-import { courses } from "@/data/catalog";
+import { useWorkspace } from "@/hooks/use-workspace";
 import type { Course } from "@/types";
 
 export default function ExplorarPage() {
+  const workspace = useWorkspace();
+  const courses = workspace.courses;
   const [query, setQuery] = useState("");
   const [line, setLine] = useState("Todas");
   const [selected, setSelected] = useState<Course | null>(null);
@@ -22,7 +24,7 @@ export default function ExplorarPage() {
         const matchesQuery = `${course.title} ${course.summary}`.toLowerCase().includes(query.toLowerCase());
         return matchesLine && matchesQuery;
       }),
-    [line, query],
+    [courses, line, query],
   );
 
   return (
@@ -63,7 +65,10 @@ export default function ExplorarPage() {
             <p className="mt-3 text-sm text-muted">{selected.summary}</p>
             <p className="mt-2 text-xs text-muted">{selected.minutes} minutos · {selected.line}</p>
             {selected.contracted ? (
-              <p className="mt-3 text-sm">Este contenido ya forma parte de la oferta contratada. La ruta activa sigue siendo SARLAFT para líderes.</p>
+              <p className="mt-3 text-sm">
+                Este contenido está contratado para {workspace.tenant.name}.
+                {workspace.tenant.id === "ejemplo" ? " La ruta activa de esta entidad sigue siendo SARLAFT para líderes." : " Completarlo no acredita una competencia."}
+              </p>
             ) : (
               <Button className="mt-4" variant="outline" onClick={() => toast("Disponible en una etapa posterior. No se envió ninguna solicitud.")}>
                 Manifestar interés

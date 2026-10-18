@@ -13,6 +13,11 @@ export default function LoginPage() {
   const authenticated = useDemoStore((state) => state.authenticated);
   const [email, setEmail] = useState("laura.gomez@cooperativa.ejemplo");
   const [password, setPassword] = useState("demo");
+  const [clientReady, setClientReady] = useState(false);
+
+  useEffect(() => {
+    setClientReady(true);
+  }, []);
 
   useEffect(() => {
     if (authenticated) router.replace("/app");
@@ -55,10 +60,13 @@ export default function LoginPage() {
               Contraseña
               <Input className="mt-1.5" type="password" value={password} onChange={(event) => setPassword(event.target.value)} required autoComplete="current-password" />
             </label>
-            <Button type="submit" className="mt-5 h-12 w-full">Iniciar sesión</Button>
+            <Button type="submit" className="mt-5 h-12 w-full" disabled={!clientReady}>Iniciar sesión</Button>
             <p className="mt-3 flex items-center gap-2 text-xs text-muted">
               <LockKeyhole className="h-3.5 w-3.5" />
               No se validan credenciales reales. Cualquier correo abre la demo.
+            </p>
+            <p className="mt-2 text-xs leading-relaxed text-muted">
+              Personas de la demo: Laura Gómez, Germán Rojas (correo con “german”) y Camila Herrera (correo con “gba”). Un correo con “aurora” abre Cooperativa Aurora como Valentina Ruiz.
             </p>
             <div className="mt-6 border-t border-line pt-4 text-center">
               <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-muted">Un producto del ecosistema</p>
